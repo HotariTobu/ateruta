@@ -25,7 +25,8 @@ Feature: API type definitions
 
   Scenario: WebSocket close codes
     Then the following custom close codes are used:
-      | code | meaning                        |
+      | code | meaning                         |
+      | 4401 | Unauthorized                    |
       | 4409 | Connected from another location |
 
   Scenario: WebSocket message envelope

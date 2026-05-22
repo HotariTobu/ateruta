@@ -10,7 +10,7 @@ Feature: Session and HTTP API
 
   Scenario: WebSocket connection without cookie is rejected
     When a player connects via WebSocket without an ateruta-player-id cookie
-    Then the connection is closed with an error
+    Then the connection is closed with close code 4401
 
   Scenario: HTTP endpoints identify player from cookie
     When a client calls an HTTP endpoint that requires player identification
@@ -31,15 +31,15 @@ Feature: Session and HTTP API
     Then the response contains { token, expiresAt }
 
   Scenario: GET /api/session issues session cookie
+    Given no ateruta-player-id cookie is present
     When a client calls GET /api/session
-    And no ateruta-player-id cookie is present
     Then a Set-Cookie header is returned with a new UUID
     And the cookie attributes are HttpOnly, Secure, SameSite=Lax, Max-Age=31536000, Path=/
     And the response body is { ready: true }
 
   Scenario: GET /api/session with existing cookie
+    Given an ateruta-player-id cookie is already present
     When a client calls GET /api/session
-    And a ateruta-player-id cookie is already present
     Then no Set-Cookie header is returned
     And the response body is { ready: true }
 

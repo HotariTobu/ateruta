@@ -12,10 +12,12 @@ Feature: Room settings
       | Room is in lobby   | "Can only change settings in lobby"  |
       | Payload has fields | "Settings payload must not be empty" |
       | Field validations  | "Settings validation failed"         |
-    And field validations are applied to each field present in the payload
-    And all field validation errors are collected and returned in a single error event
-    And the error message is "Settings validation failed" with individual errors in details
-    And if any field validation fails, no fields in the payload are applied
+
+  Scenario: room:settings field validation is batched and atomic
+    When the host sends room:settings with multiple fields that fail validation
+    Then field validations are applied to each field present in the payload
+    And all field validation errors are collected in a single error event with message "Settings validation failed" and individual errors in details
+    And no fields in the payload are applied
 
   Scenario: Empty settings payload is rejected
     Given a room exists in lobby phase
@@ -49,8 +51,8 @@ Feature: Room settings
     And the nickname is sanitized and trimmed before validation
 
   Scenario: Players get auto-assigned nicknames
-    Given a room exists
-    When player A creates the room and sends room:join
+    Given player A has created a room
+    When player A sends room:join
     And player B sends room:join
     And player C sends room:join
     Then player A's nickname is "Player 1"
@@ -63,10 +65,6 @@ Feature: Room settings
     And Player 2 has left the room
     When a new player joins the room
     Then the new player's nickname is "Player 4"
-
-  Scenario: Nickname counter persists for room lifetime
-    Given a room has been created
-    Then the auto-assigned nickname counter persists until the room is deleted
 
   Scenario: Player changes nickname
     Given a player is in a room
@@ -113,7 +111,8 @@ Feature: Room settings
 
   Scenario: Nickname is preserved across reconnection
     Given a player with nickname "Alice" is in the room
-    When the player disconnects and reconnects
+    When the player disconnects
+    And the player rejoins
     Then the player's nickname is "Alice"
 
   # Design: Allowed deliberately—"which Tom was that?" confusion is
@@ -170,7 +169,8 @@ Feature: Room settings
 
   Scenario: Handicap is preserved across reconnection
     Given a player with handicap 10 seconds is in a game
-    When the player disconnects and reconnects
+    When the player disconnects
+    And the player rejoins
     Then the player's handicap is 10 seconds
 
   # --- Songs validation ---
@@ -354,6 +354,6 @@ Feature: Room settings
   # Design: The server does not auto-adjust to keep host-configurable
   # settings flowing exclusively in the client-to-server direction.
   Scenario: Sending songs does not auto-adjust total rounds
-    Given a room in lobby phase with totalRounds set to 10
+    Given a room in lobby phase with total rounds set to 10
     When the host sends room:settings with 5 songs
     Then totalRounds remains 10

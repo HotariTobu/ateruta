@@ -21,13 +21,18 @@ Feature: Apple Music integration
     When the Apple Music SDK is initialized
     Then the unauthorized state is set
 
-  Scenario: Authorization status changes are monitored
-    When a user authorizes or unauthorizes Apple Music
-    Then the authorized state is updated accordingly
+  Scenario: Authorization is monitored
+    When a user authorizes Apple Music
+    Then the authorized state becomes true
+
+  Scenario: Unauthorization is monitored
+    When a user unauthorizes Apple Music
+    Then the authorized state becomes false
 
   Scenario: SDK initialization error displayed
-    When the Apple Music SDK fails to initialize
-    Then the error message is displayed as a toast
+    When the app attempts to initialize the Apple Music SDK
+    Then initialization fails
+    And the error message is displayed as a toast
 
   # --- Authorization ---
 
@@ -100,9 +105,9 @@ Feature: Apple Music integration
     Then a toast "No songs found in this playlist" is displayed
 
   Scenario: Network error during URL load shows error
-    Given the host pastes a playlist URL into the search field
-    When a network error occurs while loading the playlist
-    Then the error message is displayed as a toast
+    When the host pastes a playlist URL into the search field
+    Then the playlist load fails with a network error
+    And the error message is displayed as a toast
 
   # --- Token management ---
 
@@ -153,8 +158,9 @@ Feature: Apple Music integration
 
   Scenario: Song playback failure shows error
     Given the host has a song ready to play
-    When the song fails to play
-    Then the error message is displayed as a toast
+    When the host plays the song
+    Then song playback fails
+    And the error message is displayed as a toast
 
   # --- Queue management ---
 

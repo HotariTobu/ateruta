@@ -15,26 +15,26 @@ Feature: Room screen
 
   Scenario: Room check failure navigates to home
     When the player navigates to /room/{code}
-    And the GET /api/room/{code} request returns a non-200 status
-    Then the error from the response is displayed as a toast
+    Then the GET /api/room/{code} request returns a non-200 status
+    And the error from the response is displayed as a toast
     And the player is navigated to the home screen
 
   Scenario: Room join failure navigates to home
     Given the player is on a room page
-    When room:join fails with an error
+    And room:join has been sent
+    When the server returns an error
     Then the error message is displayed as a toast
     And the player is navigated to the home screen
 
   Scenario: Connecting state shown while waiting for WebSocket
-    Given the player navigates to /room/{code}
-    And the WebSocket connection is not yet established
+    Given the WebSocket connection is not yet established
+    When the player navigates to /room/{code}
     Then "Connecting..." is displayed
 
   Scenario: Joining room shows loading state
-    Given the player navigates to /room/{code}
-    And the WebSocket connection is established
-    And the join is in progress
-    Then "Joining room..." is displayed
+    Given the WebSocket connection is established
+    When the player navigates to /room/{code}
+    Then "Joining room..." is displayed while the join is in progress
 
   Scenario: Back to Home button always visible
     Given the player is in a room
@@ -67,9 +67,10 @@ Feature: Room screen
     Then "Reconnecting..." is displayed
 
   Scenario: WebSocket reconnection retries with backoff
-    Given the WebSocket connection is lost
+    Given the player is in a room
+    When the WebSocket connection is lost
     Then reconnection is attempted with intervals of 1, 2, 4, 8, 16 seconds
-    And if all retries fail, "Connection lost" is displayed
+    And after all retries fail, "Connection lost" is displayed
     And a "Retry" button is visible
 
   Scenario: Retry button restarts reconnection

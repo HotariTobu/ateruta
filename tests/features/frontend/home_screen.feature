@@ -63,8 +63,8 @@ Feature: Home screen
 
   Scenario: Create room failure shows error
     When the player clicks "Create Room"
-    And the server responds with a non-201 status and error
-    Then the error message is displayed as a toast
+    Then the server responds with a non-201 status and error
+    And the error message is displayed as a toast
 
   Scenario: Create room shows loading state
     When the player clicks "Create Room"

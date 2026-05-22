@@ -56,19 +56,21 @@ Feature: Multiplayer interactions
 
   Scenario: Wrong answer with penalty does not affect other players
     Given a game is in progress with 3 players
-    When player A submits a wrong answer and gets locked out
-    Then player B and player C can still submit answers
+    When player A submits a wrong answer
+    Then player A is locked out
+    And player B and player C can still submit answers
 
   Scenario: Handicap delays answer processing
-    Given players set their handicaps in the lobby
+    Given players have configured their handicaps in the lobby
     And player A has handicap of 0 seconds
     And player B has handicap of 5 seconds
     And a game is in progress
-    When both players submit the correct answer at the same time
+    When player A submits the correct answer
+    And player B submits the correct answer at the same time
     Then player A scores before player B
 
   Scenario: All scoring slots filled triggers auto-reveal
-    Given a game with 3 scoring slots and 5 players
+    Given a game with rank points "4, 2, 1" and 5 players
     When 3 players submit correct answers
     Then the song is automatically revealed
     And the remaining players cannot score

@@ -49,8 +49,9 @@ Feature: Lobby screen
     Then only the first 20 characters are in the field
 
   Scenario: Nickname error from server is displayed
-    Given the server rejects the nickname
-    Then the error message is displayed as a toast
+    When the player submits a nickname
+    Then the server rejects the nickname
+    And the error message is displayed as a toast
 
   # --- Handicap ---
 
@@ -184,8 +185,9 @@ Feature: Lobby screen
   Scenario: Settings text fields validate before syncing
     # Validations mirror room_settings.feature field validations
     Given the player is the host
-    When a text field setting value is invalid
-    Then an error is displayed without sending the setting
+    When a text field setting is changed to an invalid value
+    Then an error is displayed
+    And the setting is not sent to the server
 
   Scenario: Rounds slider resets to song count when songs change
     Given the player is the host
@@ -194,9 +196,10 @@ Feature: Lobby screen
 
   Scenario: Start game validates settings
     # Validations mirror game:start checks in backend/features/game.feature
+    Given the settings are invalid
     When the host clicks "Start Game"
-    And the settings are invalid
-    Then an error is displayed without sending game:start
+    Then an error is displayed
+    And game:start is not sent
 
   # --- Non-host ---
 

@@ -110,17 +110,17 @@ Feature: Game screen - answering
   # --- Attempts ---
 
   Scenario: Attempts remaining displayed
-    Given a game with attemptsLimit 3
+    Given a game with attempts limit 3
     And the player has 2 attempts remaining
     Then "2 / 3 attempts left" is displayed in gray
 
   Scenario: No attempts remaining message
-    Given a game with attemptsLimit 3
+    Given a game with attempts limit 3
     And the player has used all attempts
     Then "0 / 3 attempts left" is displayed in gray
 
   Scenario: Attempts display hidden when unlimited
-    Given a game with attemptsLimit 0
+    Given a game with attempts limit 0
     Then no attempts display is shown
 
   # --- Scoring feedback ---

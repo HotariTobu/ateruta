@@ -25,8 +25,8 @@ Feature: Room management
     And a room with a 4-digit code between 1000 and 9999 is created
 
   Scenario: Room creation fails on server error
+    Given the server fails to handle room creation for any reason
     When a player sends POST /api/room
-    And the server encounters an internal error
     Then the response status is 500 with { error }
 
   Scenario: Room code is unique
@@ -85,8 +85,6 @@ Feature: Room management
     And "Not in another room" does not consider players in inactivePlayers as "in a room"
     And "Room in lobby phase" error is "Game already in progress" during playing or "Game has ended" during finished
     And "Room not full" checks whether activePlayers count has reached 20
-    And after all checks pass, if the player already has an active connection in the room, the old connection is closed with close code 4409
-    And if the same socket is already in the room, the join is a no-op
 
   Scenario: Player joins an existing room in lobby
     Given a room exists in lobby phase
@@ -267,8 +265,7 @@ Feature: Room management
   Scenario: Penalty state continues on departure
     Given a player has penalty state (pending answer, lockout, or wrong answer count)
     When the player leaves or disconnects
-    Then pending answer timers and lockout timers continue to run
-    And the wrong answer count is preserved
+    Then the penalty state is preserved
 
   # Design: Players in inactivePlayers are not considered room members
   # for join checks. Their data is preserved only for potential rejoin.

@@ -1,0 +1,30 @@
+[project]
+name = "tests"
+requires-python = ">=3.13"
+version = "0.0.0"
+
+[tool.setuptools]
+packages = []
+
+[tool.pytest.ini_options]
+addopts = "-n auto"
+testpaths = ["backend", "frontend", "integration"]
+
+[tool.ruff.lint.flake8-tidy-imports.banned-api]
+"typing.cast".msg = "cast suppresses type errors at the call site without runtime verification. Use assert-based narrowing instead."
+"typing.Any".msg = "Any disables type checking. Use a concrete type or a protocol instead."
+
+[dependency-groups]
+dev = [
+    "httpx>=0.28.1",
+    "musickit-api-mock-playwright>=0.1.0",
+    "pydantic>=2.13.0",
+    "pytest>=9.0.2",
+    "pytest-bdd>=8.1.0",
+    "pytest-playwright>=0.7.2",
+    "pytest-randomly>=4.0.1",
+    "pytest-xdist>=3.8.0",
+    "ruff>=0.15.9",
+    "ty>=0.0.28",
+    "websockets>=16.0",
+]

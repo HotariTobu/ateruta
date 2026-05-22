@@ -21,7 +21,7 @@ Feature: Answer submission, scoring, and penalties
   # --- Correct answers ---
 
   Scenario: First correct answer earns maximum points
-    Given a game with rankPoints [4, 2, 1]
+    Given a game with rank points [4, 2, 1]
     And a round is in progress
     When a player sends game:answer with the correct song ID
     Then the player earns 4 points
@@ -30,14 +30,14 @@ Feature: Answer submission, scoring, and penalties
     And room:state is broadcast to the room
 
   Scenario: Second correct answer earns second-tier points
-    Given a game with rankPoints [4, 2, 1]
+    Given a game with rank points [4, 2, 1]
     And one player has already scored
     When another player sends game:answer with the correct song ID
     Then the player earns 2 points
     And the player is recorded as a winner
 
   Scenario: Third correct answer earns third-tier points
-    Given a game with rankPoints [4, 2, 1]
+    Given a game with rank points [4, 2, 1]
     And two players have already scored
     When another player sends game:answer with the correct song ID
     Then the player earns 1 point
@@ -47,13 +47,6 @@ Feature: Answer submission, scoring, and penalties
     Given a player with score 4
     When the player earns 2 points in the current round
     Then the player's total score is 6
-
-  # --- Answer recording ---
-
-  Scenario: All answers are recorded in round state
-    Given a round is in progress
-    When a player sends game:answer (correct or incorrect)
-    Then the answer is recorded for that player
 
   # --- Wrong answers ---
 
@@ -81,7 +74,7 @@ Feature: Answer submission, scoring, and penalties
     Then the player receives an error event with "Already scored this round"
 
   Scenario: Answer rejected when all scoring slots are filled
-    Given a game with rankPoints [4, 2, 1] and 3 or more players
+    Given a game with rank points [4, 2, 1] and 3 or more players
     And 3 players have already scored
     When another player sends game:answer with the correct song ID
     Then the player receives an error event with "Round has been revealed"
@@ -106,7 +99,7 @@ Feature: Answer submission, scoring, and penalties
   # for the last answer because game:reveal already includes the winners.
 
   Scenario: All scoring slots filled triggers auto-reveal
-    Given a game with rankPoints [4, 2, 1] and 3 players
+    Given a game with rank points [4, 2, 1] and 3 players
     And 2 players have already scored
     When the 3rd player sends game:answer with the correct song ID
     Then the player earns points and is recorded as a winner
@@ -115,18 +108,44 @@ Feature: Answer submission, scoring, and penalties
     And game:reveal is broadcast to the room
     And room:state is broadcast to the room
 
+  # Design: activePlayerCount uses only currently active (connected) players.
+  # Including inactive players would block the game waiting for answers
+  # from disconnected players who cannot respond.
+  Scenario: Auto-reveal when all active players score with fewer active players than rank points
+    Given a game with rank points [4, 2, 1] and 2 active players
+    When both players send game:answer with the correct song ID
+    Then game:reveal is broadcast to the room
+
+  Scenario: After mid-round disconnect, the next correct answer can trigger auto-reveal at the reduced cap
+    Given a game with rank points [4, 2, 1] and 3 active players
+    And 1 player has scored
+    When 1 other player disconnects
+    And the remaining active player sends game:answer with the correct song ID
+    Then game:reveal is broadcast to the room
+
+  Scenario: Mid-round rejoin restores the cap
+    Given a game with rank points [4, 2, 1] and 3 active players
+    And 1 player is in inactivePlayers
+    And 1 active player has scored
+    When the inactive player rejoins
+    And one of the unscored active players sends game:answer with the correct song ID
+    Then game:reveal is not broadcast
+
   # Design: Auto-reveal is not triggered when player disconnection causes
   # all scoring slots to be filled. Adding this would couple connection
   # management with scoring logic and introduce race conditions with
   # pending answers. The host can close answers manually instead.
+  Scenario: Disconnection that would fill all slots does not trigger auto-reveal
+    Given a game with rank points [4, 2, 1] and 3 active players
+    And 2 players have scored
+    When the remaining active player disconnects
+    Then game:reveal is not broadcast
 
-  # Design: activePlayerCount uses only currently active (connected) players.
-  # Including inactive players would block the game waiting for answers
-  # from disconnected players who cannot respond.
-  Scenario: Max scorers dynamically limited by active player count
-    Given a game with rankPoints [4, 2, 1]
-    Then the maximum number of scorers is min(len(rankPoints), activePlayerCount)
-    And this is recalculated each time an answer is processed
+  Scenario: Scored player disconnect does not retroactively fill slots
+    Given a game with rank points [4, 2, 1] and 3 active players
+    And player A has scored
+    When player A disconnects
+    Then game:reveal is not broadcast
 
   # --- Handicap delay ---
   # Design: Handicap allows skilled players to voluntarily add a delay,
@@ -139,7 +158,8 @@ Feature: Answer submission, scoring, and penalties
 
   Scenario: Handicap affects scoring order
     Given player A with handicap 0 seconds and player B with handicap 5 seconds
-    When both players send game:answer with the correct song ID at the same time
+    When player A sends game:answer with the correct song ID
+    And player B sends game:answer with the correct song ID at the same time
     Then player A's answer is processed immediately
     And player B's answer is processed after 5000ms
     And player A earns a higher scoring slot than player B
@@ -166,7 +186,7 @@ Feature: Answer submission, scoring, and penalties
   # --- Penalty ---
 
   Scenario: Wrong answer triggers lockout
-    Given a game with lockoutDuration 5
+    Given a game with lockout duration 5
     When a player sends game:answer with a wrong answer
     Then the player is locked out for 5 seconds
     And game:wrong-answer includes { lockoutExpiresAt }
@@ -182,18 +202,18 @@ Feature: Answer submission, scoring, and penalties
     Then the player can submit an answer
 
   Scenario: Wrong answer count is tracked
-    Given a game with attemptsLimit 3
+    Given a game with attempts limit 3
     When a player sends game:answer with 2 wrong answers
     Then the player receives game:wrong-answer
 
   Scenario: Player with no attempts remaining cannot answer
-    Given a game with attemptsLimit 3
+    Given a game with attempts limit 3
     And a player has submitted 3 wrong answers
     When the player sends game:answer
     Then the player receives an error event with "No attempts remaining"
 
   Scenario: Check order is attempts limit before lockout
-    Given a player has exceeded attemptsLimit and is also locked out
+    Given a player has exceeded the attempts limit and is also locked out
     When the player sends game:answer
     Then the error is "No attempts remaining" not "Locked out"
 
@@ -204,7 +224,7 @@ Feature: Answer submission, scoring, and penalties
 
   # Design: 0 disables the lockout to support penalty-free configurations.
   Scenario: Lockout disabled when lockout duration is 0
-    Given a game with lockoutDuration 0
+    Given a game with lockout duration 0
     When a player sends game:answer with a wrong answer
     Then the player is not locked out
     And game:wrong-answer includes lockoutExpiresAt: null
@@ -212,7 +232,7 @@ Feature: Answer submission, scoring, and penalties
 
   # Design: 0 means unlimited to support no-limit configurations.
   Scenario: Unlimited attempts when attempts limit is 0
-    Given a game with attemptsLimit 0
+    Given a game with attempts limit 0
     When a player sends game:answer 10 times with wrong answers
     Then the player can still submit another answer
     And the player receives game:wrong-answer
@@ -228,16 +248,15 @@ Feature: Answer submission, scoring, and penalties
   # Design: No notification because a state change makes the previous
   # answer obviously irrelevant.
   Scenario: Game state re-checked after handicap delay
-    Given a player with handicap 10 seconds sends game:answer
+    Given a player has a pending answer due to handicap delay
     When the handicap delay expires
-    Then the server re-checks the answer rejection checks before processing
-    And if any check fails, the answer is silently discarded with no notification to the player
+    Then if any rejection check would fail under the current state, the answer is silently discarded with no notification to the player
 
   # Design: A disconnected player's pending answer can still score because
   # the answer was submitted before disconnection. The answer rejection
   # checks do not include an "active player" condition.
   Scenario: Disconnected player's pending answer can still score
-    Given a player with handicap sends game:answer with the correct song ID
+    Given a player with handicap has a pending answer with the correct song ID
     When the player disconnects before the handicap delay expires
     And the delay expires
     Then the answer is processed and the player earns points

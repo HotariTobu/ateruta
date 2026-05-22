@@ -99,8 +99,8 @@ Feature: Game screen - playback and host controls
 
   # --- Reveal ---
 
-  Scenario: Restore-reveal triggers reveal state on reconnection
-    Given the player reconnects during a revealed round
+  Scenario: Restore-reveal triggers reveal state
+    Given a round has been revealed
     When game:restore-reveal is received
     Then the reveal panel is displayed with the correct song and winners
 
@@ -116,13 +116,13 @@ Feature: Game screen - playback and host controls
     Given the round has been revealed with no winners
     Then "No one got it" is displayed
 
-  Scenario: Host sees next round button after reveal
+  Scenario: Host advances to next round after reveal
     Given the round has been revealed and more rounds remain
     Then the host sees a "Next Round" button
     When the host clicks "Next Round"
     Then game:next-round is sent to the server
 
-  Scenario: Host sees results button on last round
+  Scenario: Host proceeds to results from last round
     Given the last round has been revealed
     Then the host sees a "See Results" button
     When the host clicks "See Results"
@@ -155,7 +155,8 @@ Feature: Game screen - playback and host controls
   # --- Host disconnection ---
 
   Scenario: Banner shown when host disconnects during game
-    Given the host disconnects during a game
+    Given a game is in progress
+    When the host disconnects
     Then a banner displays "The host has disconnected. Waiting for reconnection..."
     And the banner does not block game interaction
 

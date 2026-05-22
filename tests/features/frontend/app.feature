@@ -10,8 +10,8 @@ Feature: App initialization
 
   Scenario: Session initialization failure shows error
     When the app starts
-    And GET /api/session fails
-    Then "Server unavailable" is displayed as the entire page content
+    Then GET /api/session fails
+    And "Server unavailable" is displayed as the entire page content
 
   Scenario: WebSocket connection is established after session
     Given the session cookie has been established
@@ -19,6 +19,6 @@ Feature: App initialization
 
   Scenario: WebSocket initial connection retries with backoff
     Given the session cookie has been established
-    And the initial WebSocket connection fails
-    Then connection is retried with intervals of 1, 2, 4, 8, 16 seconds
-    And if all retries fail, "Connection failed" is displayed as the entire page content
+    When the app attempts the initial WebSocket connection
+    Then the connection is retried with intervals of 1, 2, 4, 8, 16 seconds
+    And after the last retry fails, "Connection failed" is displayed as the entire page content

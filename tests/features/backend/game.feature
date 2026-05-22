@@ -60,19 +60,19 @@ Feature: Game lifecycle
     And the host receives an error event with "Total rounds are required"
 
   Scenario: Game cannot start with too many rounds
-    Given a room in lobby phase with 3 songs and totalRounds set to 5
+    Given a room in lobby phase with 3 songs and total rounds set to 5
     When the host sends game:start
     Then the game does not start
     And the host receives an error event with "Not enough songs for the specified number of rounds"
 
   Scenario: Game cannot start without rank points
-    Given a room in lobby phase with empty rankPoints
+    Given a room in lobby phase with empty rank points
     When the host sends game:start
     Then the game does not start
     And the host receives an error event with "Rank points are required"
 
   Scenario: Game cannot start without playback durations
-    Given a room in lobby phase with empty playbackDurations
+    Given a room in lobby phase with empty playback durations
     When the host sends game:start
     Then the game does not start
     And the host receives an error event with "Playback durations are required"
@@ -189,7 +189,7 @@ Feature: Game lifecycle
     Given a round is in progress at playback duration index 0
     And the playback durations are [1, 2, 4, 8, 16]
     When the host sends game:extend
-    Then the internal playback duration index advances to 1
+    Then playbackDurationIndex advances to 1
     And room:state is broadcast to the room
 
   Scenario: Extension at maximum duration is rejected
@@ -216,7 +216,7 @@ Feature: Game lifecycle
   Scenario: Extend is allowed before song is played
     Given a round is in progress and no song has been played
     When the host sends game:extend
-    Then the internal playback duration index advances
+    Then playbackDurationIndex advances
     And room:state is broadcast to the room
 
   # --- Close answers ---
@@ -273,7 +273,7 @@ Feature: Game lifecycle
   # --- Game end ---
 
   Scenario: All rounds completed rejects next round
-    Given a game with totalRounds set to 3
+    Given a game with total rounds set to 3
     And 3 rounds have been played
     When the host sends game:next-round
     Then the host receives an error event with "All rounds have been played"
