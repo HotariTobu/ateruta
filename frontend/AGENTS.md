@@ -6,7 +6,6 @@ SolidJS SPA. Built with Bun, output as static files.
 
 - SolidJS — Signal-based reactivity (no Virtual DOM)
 - Tailwind CSS v4 — Styling
-- `@solidjs/router` — SPA routing
 - Fuse.js — Fuzzy search for song titles
 - MusicKit JS v3 — Apple Music playback & playlist search (loaded from CDN)
 

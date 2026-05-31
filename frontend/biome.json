@@ -22,7 +22,6 @@
     "enabled": true,
     "domains": {
       "project": "all",
-      "react": "all",
       "test": "all"
     },
     "rules": {
@@ -471,426 +470,6 @@
   },
   "overrides": [
     {
-      "includes": ["**/__mocks__/**/*.ts"],
-      "linter": {
-        "rules": {
-          "style": {
-            "noRestrictedImports": {
-              "level": "error",
-              "options": {
-                "patterns": [
-                  {
-                    "group": ["**/*", "!vitest"],
-                    "message": "You can import from vitest"
-                  }
-                ]
-              }
-            }
-          }
-        }
-      }
-    },
-    {
-      "includes": ["src/**/*.stories.tsx"],
-      "linter": {
-        "rules": {
-          "style": {
-            "noDefaultExport": "off",
-            "noRestrictedImports": {
-              "level": "error",
-              "options": {
-                "patterns": [
-                  {
-                    "group": ["../**/*"],
-                    "message": "Do not use relative imports"
-                  },
-                  {
-                    "group": [
-                      "**/*",
-                      "!@storybook/preact-vite",
-                      "!storybook/test",
-                      "!preact",
-                      "!**/__storybook__/**/*",
-                      "!@/types/non-nullable-keyish",
-                      "!./*"
-                    ],
-                    "message": "You can import from storybook, preact, NonNullableKeyish, and sibling files"
-                  }
-                ]
-              }
-            }
-          }
-        }
-      }
-    },
-    {
-      "includes": [
-        "src/**/*.tsx",
-        "!src/**/*.stories.tsx",
-        "!src/**/*.test.tsx"
-      ],
-      "linter": {
-        "rules": {
-          "style": {
-            "noRestrictedImports": {
-              "level": "error",
-              "options": {
-                "patterns": [
-                  {
-                    "group": ["../**/*"],
-                    "message": "Do not use relative imports"
-                  },
-                  {
-                    "group": ["**/__*__/**"],
-                    "message": "Do not import from dev only files"
-                  },
-                  {
-                    "group": [
-                      "**/*",
-                      "!@tanstack/react-virtual",
-                      "!class-variance-authority",
-                      "!preact",
-                      "!preact/compat",
-                      "!preact/hooks",
-                      "!react-hook-form",
-                      "!zod",
-                      "!@/assets/icon/*",
-                      "!@/components/**/*",
-                      "!@/hooks/use-schemed-form/use-schemed-form",
-                      "!@/types/*"
-                    ],
-                    "message": "You can import from cva, preact, zod, icons, components, and use-schemed-form"
-                  },
-                  {
-                    "group": ["preact/compat"],
-                    "importNamePattern": "forwardRef",
-                    "invertImportNamePattern": true,
-                    "message": "You can import forwardRef from preact/compat"
-                  }
-                ]
-              }
-            }
-          }
-        }
-      }
-    },
-    {
-      "includes": ["src/**/use-*.ts", "!src/**/use-*.test.ts"],
-      "linter": {
-        "rules": {
-          "style": {
-            "noRestrictedImports": {
-              "level": "error",
-              "options": {
-                "patterns": [
-                  {
-                    "group": ["../**/*"],
-                    "message": "Do not use relative imports"
-                  },
-                  {
-                    "group": ["**/__*__/**"],
-                    "message": "Do not import from dev only files"
-                  },
-                  {
-                    "group": [
-                      "**/*",
-                      "!preact/hooks",
-                      "!sonner",
-                      "!use-debounce",
-                      "!@/actions/*",
-                      "!@/components/**/use-*",
-                      "!@/hooks/**/*",
-                      "!@/types/*",
-                      "!./*"
-                    ],
-                    "message": "You can import from preact/hooks, sonner, use-debounce, actions, hooks, types, and sibling files"
-                  }
-                ]
-              }
-            }
-          }
-        }
-      }
-    },
-    {
-      "includes": ["src/**/*.test.tsx"],
-      "linter": {
-        "rules": {
-          "correctness": {
-            "noRestrictedElements": "off"
-          },
-          "style": {
-            "noRestrictedImports": {
-              "level": "error",
-              "options": {
-                "patterns": [
-                  {
-                    "group": ["../**/*"],
-                    "message": "Do not use relative imports"
-                  },
-                  {
-                    "group": [
-                      "**/*",
-                      "!vitest",
-                      "!vitest-browser-preact",
-                      "!@vitest/browser/context",
-                      "!@/test-utils/*",
-                      "!./*"
-                    ],
-                    "message": "You can import from test, and sibling files"
-                  },
-                  {
-                    "group": ["vitest"],
-                    "importNamePattern": "it",
-                    "message": "Do not import it from vitest. Use test instead."
-                  }
-                ]
-              }
-            }
-          }
-        }
-      }
-    },
-    {
-      "includes": ["src/**/use-*.test.tsx"],
-      "linter": {
-        "rules": {
-          "style": {
-            "noRestrictedImports": {
-              "level": "error",
-              "options": {
-                "patterns": [
-                  {
-                    "group": ["../**/*"],
-                    "message": "Do not use relative imports"
-                  },
-                  {
-                    "group": [
-                      "**/*",
-                      "!vitest",
-                      "!vitest-browser-preact",
-                      "!@vitest/browser/context",
-                      "!@/test-utils/*",
-                      "!sonner",
-                      "!@/actions/*",
-                      "!@/types/*",
-                      "!./*"
-                    ],
-                    "message": "You can import from test, sonner, actions, types, and sibling files"
-                  },
-                  {
-                    "group": ["vitest"],
-                    "importNamePattern": "it",
-                    "message": "Do not import it from vitest. Use test instead."
-                  }
-                ]
-              }
-            }
-          }
-        }
-      }
-    },
-    {
-      "includes": ["src/actions/*.ts"],
-      "linter": {
-        "rules": {
-          "style": {
-            "noRestrictedImports": {
-              "level": "error",
-              "options": {
-                "patterns": [
-                  {
-                    "group": ["../**/*"],
-                    "message": "Do not use relative imports"
-                  },
-                  {
-                    "group": ["**/__*__/**"],
-                    "message": "Do not import from dev only files"
-                  },
-                  {
-                    "group": [
-                      "**/*",
-                      "!@/db",
-                      "!@/sleep",
-                      "!@/types/*",
-                      "!./*"
-                    ],
-                    "message": "You can import from @/db, @/sleep, @/types, and sibling files"
-                  }
-                ]
-              }
-            }
-          }
-        }
-      }
-    },
-    {
-      "includes": ["src/components/__storybook__/*.tsx"],
-      "linter": {
-        "rules": {
-          "correctness": {
-            "noRestrictedElements": "off"
-          }
-        }
-      }
-    },
-    {
-      "includes": ["src/hooks/**/use-*.ts"],
-      "linter": {
-        "rules": {
-          "style": {
-            "noRestrictedImports": {
-              "level": "error",
-              "options": {
-                "patterns": [
-                  {
-                    "group": ["../**/*"],
-                    "message": "Do not use relative imports"
-                  },
-                  {
-                    "group": ["**/__*__/**"],
-                    "message": "Do not import from dev only files"
-                  },
-                  {
-                    "group": [
-                      "**/*",
-                      "!@hookform/resolvers/zod",
-                      "!dexie",
-                      "!preact/hooks",
-                      "!react-hook-form",
-                      "!zod",
-                      "!@/hooks/**/*",
-                      "!@/types/*",
-                      "!./*"
-                    ],
-                    "message": "You can import from @hookform/resolvers/zod, dexie, preact/hooks, react-hook-form, zod, hooks, types, and sibling files"
-                  }
-                ]
-              }
-            }
-          }
-        }
-      }
-    },
-    {
-      "includes": ["src/hooks/**/use-*.test.tsx"],
-      "linter": {
-        "rules": {
-          "style": {
-            "noRestrictedImports": {
-              "level": "error",
-              "options": {
-                "patterns": [
-                  {
-                    "group": ["../**/*"],
-                    "message": "Do not use relative imports"
-                  },
-                  {
-                    "group": [
-                      "**/*",
-                      "!vitest",
-                      "!vitest-browser-preact",
-                      "!preact/hooks",
-                      "!zod",
-                      "!@/test-utils/*",
-                      "!./*"
-                    ],
-                    "message": "You can import from test, preact/hooks, zod, test-utils, and sibling files"
-                  },
-                  {
-                    "group": ["vitest"],
-                    "importNamePattern": "it",
-                    "message": "Do not import it from vitest. Use test instead."
-                  }
-                ]
-              }
-            },
-            "useComponentExportOnlyModules": "off"
-          }
-        }
-      }
-    },
-    {
-      "includes": ["src/types/*.ts"],
-      "linter": {
-        "rules": {
-          "style": {
-            "noRestrictedImports": {
-              "level": "error",
-              "options": {
-                "patterns": [
-                  {
-                    "group": ["**/*", "!./*"],
-                    "message": "You can import from sibling files"
-                  }
-                ]
-              }
-            }
-          }
-        }
-      }
-    },
-    {
-      "includes": ["src/test-utils/create-test-db.ts"],
-      "linter": {
-        "rules": {
-          "style": {
-            "noRestrictedImports": {
-              "level": "error",
-              "options": {
-                "patterns": [
-                  {
-                    "group": ["**/*", "!dexie"],
-                    "message": "You can import from dexie"
-                  }
-                ]
-              }
-            }
-          }
-        }
-      }
-    },
-    {
-      "includes": ["src/test-utils/render-hook.tsx"],
-      "linter": {
-        "rules": {
-          "style": {
-            "noRestrictedImports": {
-              "level": "error",
-              "options": {
-                "patterns": [
-                  {
-                    "group": ["**/*", "!vitest-browser-preact"],
-                    "message": "You can import from vitest-browser-preact"
-                  }
-                ]
-              }
-            }
-          }
-        }
-      }
-    },
-    {
-      "includes": ["src/db.ts"],
-      "linter": {
-        "rules": {
-          "style": {
-            "noRestrictedImports": {
-              "level": "error",
-              "options": {
-                "patterns": [
-                  {
-                    "group": ["**/*", "!dexie"],
-                    "message": "You can import from dexie"
-                  }
-                ]
-              }
-            }
-          }
-        }
-      }
-    },
-    {
       "includes": ["src/main.tsx"],
       "linter": {
         "rules": {
@@ -902,12 +481,11 @@
                   {
                     "group": [
                       "**/*",
-                      "!preact",
-                      "!sonner",
-                      "!@/app",
-                      "!@/index.css"
+                      "!solid-js/web",
+                      "!./app",
+                      "!./styles.css"
                     ],
-                    "message": "You can import from preact, sonner, app.tsx, and index.css"
+                    "message": "You can import from Solid's renderer, app.tsx, and styles.css"
                   }
                 ]
               }
@@ -917,38 +495,13 @@
       }
     },
     {
-      "includes": [".storybook/main.ts"],
+      "includes": ["src/**/*.tsx"],
       "linter": {
         "rules": {
+          "correctness": {
+            "noUnresolvedImports": "off"
+          },
           "style": {
-            "noDefaultExport": "off",
-            "noRestrictedImports": {
-              "level": "error",
-              "options": {
-                "patterns": [
-                  {
-                    "group": ["**/*", "!@storybook/preact-vite"],
-                    "message": "You can import from @storybook/preact-vite"
-                  },
-                  {
-                    "group": ["@storybook/preact-vite"],
-                    "importNamePattern": "StorybookConfig",
-                    "invertImportNamePattern": true,
-                    "message": "You can import StorybookConfig from @storybook/preact-vite"
-                  }
-                ]
-              }
-            }
-          }
-        }
-      }
-    },
-    {
-      "includes": [".storybook/preview.ts"],
-      "linter": {
-        "rules": {
-          "style": {
-            "noDefaultExport": "off",
             "noRestrictedImports": {
               "level": "error",
               "options": {
@@ -956,20 +509,55 @@
                   {
                     "group": [
                       "**/*",
-                      "!@storybook/preact-vite",
-                      "!@/index.css"
+                      "!fuse.js",
+                      "!solid-js",
+                      "!solid-js/web",
+                      "!~/app",
+                      "!~/components/*",
+                      "!~/routes/*",
+                      "!./app",
+                      "!./music",
+                      "!./types",
+                      "!./styles.css"
                     ],
-                    "message": "You can import from @storybook/preact-vite, and index.css"
-                  },
-                  {
-                    "group": ["@storybook/preact-vite"],
-                    "importNamePattern": "Preview",
-                    "invertImportNamePattern": true,
-                    "message": "You can import Preview from @storybook/preact-vite"
+                    "message": "You can import from Solid, frontend source modules, and styles.css"
                   }
                 ]
               }
             }
+          }
+        }
+      }
+    },
+    {
+      "includes": ["src/**/*.ts"],
+      "linter": {
+        "rules": {
+          "correctness": {
+            "noUnresolvedImports": "off"
+          },
+          "style": {
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "patterns": [
+                  {
+                    "group": ["**/*", "!./types"],
+                    "message": "You can import local frontend type modules"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "includes": ["src/components/**/*.tsx"],
+      "linter": {
+        "rules": {
+          "correctness": {
+            "noRestrictedElements": "off"
           }
         }
       }
@@ -979,7 +567,8 @@
       "linter": {
         "rules": {
           "correctness": {
-            "noNodejsModules": "off"
+            "noNodejsModules": "off",
+            "noUnresolvedImports": "off"
           },
           "style": {
             "noDefaultExport": "off",
@@ -990,13 +579,12 @@
                   {
                     "group": [
                       "**/*",
-                      "!node:path",
-                      "!@preact/preset-vite",
+                      "!node:url",
                       "!@tailwindcss/vite",
                       "!vite",
-                      "!vite-plugin-svgr"
+                      "!vite-plugin-solid"
                     ],
-                    "message": "You can import from node:path, @preact/preset-vite, @tailwindcss/vite, vite, and vite-plugin-svgr"
+                    "message": "You can import from Node URL utilities, Tailwind, Solid, and Vite"
                   }
                 ]
               }
