@@ -1,0 +1,19 @@
+{
+  "name": "frontend",
+  "type": "module",
+  "private": true,
+  "devDependencies": {
+    "@biomejs/biome": "2.4.10",
+    "@tailwindcss/vite": "^4.0.7",
+    "tailwindcss": "^4.0.7",
+    "vite-plugin-solid": "^2.11.12"
+  },
+  "peerDependencies": {
+    "typescript": "^6"
+  },
+  "dependencies": {
+    "fuse.js": "^7.3.0",
+    "solid-js": "^1.9.5",
+    "vite": "^7.0.0"
+  }
+}
